@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -55,4 +56,53 @@ func ReadPuzzleInt(path string) ([]int, error) {
 		puzzle = append(puzzle, number)
 	}
 	return puzzle, scanner.Err()
+}
+
+// Read grid and convert symbols
+func ReadGrid[T any](path string, convert func(byte) T) ([][]T, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var grid [][]T
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		row := make([]T, len(line))
+		for i := 0; i < len(line); i++ {
+			row[i] = convert(line[i])
+		}
+		grid = append(grid, row)
+	}
+	return grid, scanner.Err()
+}
+
+func ReadGridSplitBySpaces(path string) ([][]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var grid [][]string
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		row := strings.Fields(line)
+		grid = append(grid, row)
+	}
+	return grid, scanner.Err()
+}
+
+func PrintGrid[T any](grid [][]T) {
+	for i := 0; i < len(grid); i++ {
+		for j := 0; j < len(grid[i]); j++ {
+			fmt.Print(grid[i][j])
+		}
+		fmt.Println()
+	}
 }
