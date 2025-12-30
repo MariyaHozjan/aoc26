@@ -106,3 +106,10 @@ func PrintGrid[T any](grid [][]T) {
 		fmt.Println()
 	}
 }
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
